@@ -6,22 +6,18 @@ void UImGuiSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	UImGuiSubsystem::Instance = this;
 	Super::Initialize(Collection);
-
-	//DelegateHandle = FImGuiModule::Get().AddWorldImGuiDelegate(FImGuiDelegate::CreateUObject(this, &UImGuiSubsystem::OnImGuiRender));
 }
 
 void UImGuiSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
-
-	//FImGuiModule::Get().RemoveImGuiDelegate(DelegateHandle);
 }
 
-void UImGuiSubsystem::OnImGuiRender()
+void UImGuiSubsystem::TickDraw()
 {
-	if (OnRender.IsBound())
+	if (OnDraw.IsBound())
 	{
-		OnRender.Broadcast();
+		OnDraw.Broadcast();
 	}
 }
 
@@ -32,7 +28,7 @@ UImGuiSubsystem* UImGuiSubsystem::Get()
 
 void UImGuiSubsystem::Tick(float DeltaTime)
 {
-	OnImGuiRender();
+	TickDraw();
 }
 
 TStatId UImGuiSubsystem::GetStatId() const
