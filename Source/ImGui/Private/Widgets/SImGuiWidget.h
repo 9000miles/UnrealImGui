@@ -82,49 +82,74 @@ public:
 
 	virtual FReply OnTouchEnded(const FGeometry& MyGeometry, const FPointerEvent& TouchEvent) override;
 
-private:
+	void AddCharacter(TCHAR ch);
+  FVector2D GetMousePosition() const;
+	void NotifyActiveImGuiInputText(ImGuiInputTextCallbackData* Data);
+	ImGuiInputTextCallbackData* CurrentActiveInputTextCallbackData = nullptr;
+	ImGuiID CurrentActiveInputTextID;
+	char* CurrentInputTextBuf = nullptr;
+protected:
 
-	void CreateInputHandler(const FStringClassReference& HandlerClassReference);
-	void ReleaseInputHandler();
+  /** True if the IME context for this text layout has been registered
+   * with the input method manager */
+	bool bHasRegisteredTextInputMethodContext = false;
+	/** IME context for this text layout */
+	TSharedPtr<FImGuiTextInputMethodContext> TextInputMethodContext;
+	/** Notification interface object for IMEs */
+	TSharedPtr<ITextInputMethodChangeNotifier> TextInputMethodChangeNotifier;
 
-	void RegisterImGuiSettingsDelegates();
-	void UnregisterImGuiSettingsDelegates();
 
-	void SetHideMouseCursor(bool bHide);
+  ImVector<ImWchar> InputQueueCharacters;
 
-	bool IsConsoleOpened() const;
+ private:
+  void CreateInputHandler(const FSoftClassPath& HandlerClassReference);
+  void ReleaseInputHandler();
 
-	// Update visibility based on input state.
-	void UpdateVisibility();
+  void RegisterImGuiSettingsDelegates();
+  void UnregisterImGuiSettingsDelegates();
 
-	// Update cursor based on input state.
-	void UpdateMouseCursor();
+  void SetHideMouseCursor(bool bHide);
 
-	ULocalPlayer* GetLocalPlayer() const;
-	void TakeFocus();
-	void ReturnFocus();
+  bool IsConsoleOpened() const;
 
-	// Update input state.
-	void UpdateInputState();
-	void UpdateTransparentMouseInput(const FGeometry& AllottedGeometry);
-	void HandleWindowFocusLost();
+  // Update visibility based on input state.
+  void UpdateVisibility();
 
-	void SetDPIScale(const FImGuiDPIScaleInfo& ScaleInfo);
+  // Update cursor based on input state.
+  void UpdateMouseCursor();
 
-	void SetCanvasSizeInfo(const FImGuiCanvasSizeInfo& CanvasSizeInfo);
-	void UpdateCanvasSize();
+  ULocalPlayer* GetLocalPlayer() const;
+  void TakeFocus();
+  void ReturnFocus();
 
-	void UpdateCanvasControlMode(const FInputEvent& InputEvent);
+  // Update input state.
+  void UpdateInputState();
+  void UpdateTransparentMouseInput(const FGeometry& AllottedGeometry);
+  void HandleWindowFocusLost();
 
-	void OnPostImGuiUpdate();
+  void SetDPIScale(const FImGuiDPIScaleInfo& ScaleInfo);
 
-	FVector2D TransformScreenPointToImGui(const FGeometry& MyGeometry, const FVector2D& Point) const;
+  void SetCanvasSizeInfo(const FImGuiCanvasSizeInfo& CanvasSizeInfo);
+  void UpdateCanvasSize();
 
-	virtual int32 OnPaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry, const FSlateRect& MyClippingRect, FSlateWindowElementList& OutDrawElements, int32 LayerId, const FWidgetStyle& WidgetStyle, bool bParentEnabled) const override;
+  void UpdateCanvasControlMode(const FInputEvent& InputEvent);
 
-	virtual FVector2D ComputeDesiredSize(float) const override;
+  void OnPostImGuiUpdate();
 
-	void SetImGuiTransform(const FSlateRenderTransform& Transform) { ImGuiTransform = Transform; }
+  FVector2D TransformScreenPointToImGui(const FGeometry& MyGeometry,
+                                        const FVector2D& Point) const;
+
+  virtual int32 OnPaint(const FPaintArgs& Args,
+                        const FGeometry& AllottedGeometry,
+                        const FSlateRect& MyClippingRect,
+                        FSlateWindowElementList& OutDrawElements, int32 LayerId,
+                        const FWidgetStyle& WidgetStyle,
+                        bool bParentEnabled) const override;
+
+  virtual FVector2D ComputeDesiredSize(float) const override;
+
+  void SetImGuiTransform(const FSlateRenderTransform& Transform) {
+    ImGuiTransform = Transform; }
 
 #if IMGUI_WIDGET_DEBUG
 	void OnDebugDraw();

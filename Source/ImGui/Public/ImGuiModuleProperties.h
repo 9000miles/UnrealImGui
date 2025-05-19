@@ -2,6 +2,7 @@
 
 #pragma once
 
+struct ImFontConfig;
 
 /** Properties that define state of the ImGui module. */
 class IMGUI_API FImGuiModuleProperties
@@ -71,16 +72,27 @@ public:
 	/** Toggle ImGui demo. */
 	void ToggleDemo() { SetShowDemo(!ShowDemo()); }
 
+	/** Adds a new font to initialize */
+	void AddCustomFont(FName FontName, TSharedPtr<ImFontConfig> Font) { CustomFonts.Emplace(FontName, Font); }
+
+	/** Removes a font from the custom font list */
+	void RemoveCustomFont(FName FontName) { CustomFonts.Remove(FontName); }
+
+	/** Gets the map of registered custom fonts */
+	TMap<FName, TSharedPtr<ImFontConfig>>& GetCustomFonts() { return CustomFonts; }
+
 private:
 
-	bool bInputEnabled = false;
+	bool bInputEnabled = true;
 
-	bool bKeyboardNavigationEnabled = false;
-	bool bGamepadNavigationEnabled = false;
+	bool bKeyboardNavigationEnabled = true;
+	bool bGamepadNavigationEnabled = true;
 
 	bool bKeyboardInputShared = false;
-	bool bGamepadInputShared = false;
-	bool bMouseInputShared = false;
+	bool bGamepadInputShared = true;
+	bool bMouseInputShared = true;
 
 	bool bShowDemo = false;
+
+	TMap<FName, TSharedPtr<ImFontConfig>> CustomFonts;
 };

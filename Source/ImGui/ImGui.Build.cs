@@ -18,13 +18,13 @@ public class ImGui : ModuleRules
 #else
 		bool bBuildEditor = (Target.Type == TargetRules.TargetType.Editor);
 #endif
+        OptimizeCode = CodeOptimization.InShippingBuildsOnly;
 
-		// Developer modules are automatically loaded only in editor builds but can be stripped out from other builds.
-		// Enable runtime loader, if you want this module to be automatically loaded in runtime builds (monolithic).
-		bool bEnableRuntimeLoader = true;
+        // Developer modules are automatically loaded only in editor builds but can be stripped out from other builds.
+        // Enable runtime loader, if you want this module to be automatically loaded in runtime builds (monolithic).
+        bool bEnableRuntimeLoader = true;
 
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-
 #if UE_4_24_OR_LATER
 		bLegacyPublicIncludePaths = false;
 		ShadowVariableWarningLevel = WarningLevel.Error;
@@ -33,7 +33,11 @@ public class ImGui : ModuleRules
 
 		PublicIncludePaths.AddRange(
 			new string[] {
-				Path.Combine(ModuleDirectory, "../ThirdParty/ImGuiLibrary/Include")
+				Path.Combine(ModuleDirectory, "../ThirdParty/ImGuiLibrary/Include"),
+				Path.Combine(ModuleDirectory, "../ThirdParty/ImPlotLibrary/Public"),
+				// Path.Combine(ModuleDirectory, "../ThirdParty/ImCoolBar/Public"),
+				Path.Combine(ModuleDirectory, "../ThirdParty/ImGuiToggle/Public"),
+				Path.Combine(ModuleDirectory, "../ThirdParty/ImGuiNotify/Public"),
 				// ... add public include paths required here ...
 			}
 			);
@@ -42,17 +46,19 @@ public class ImGui : ModuleRules
 		PrivateIncludePaths.AddRange(
 			new string[] {
 				"ImGui/Private",
-				"ThirdParty/ImGuiLibrary/Private"
+				"ThirdParty/ImGuiLibrary/Private",
+				"ThirdParty/ImPlotLibrary/Private",
+				// "ThirdParty/ImCoolBar/Private",
+				"ThirdParty/ImGuiToggle/Private",
 				// ... add other private include paths required here ...
 			}
 			);
-
 
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
 				"Core",
-				"Projects"
+				"Projects",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -66,7 +72,7 @@ public class ImGui : ModuleRules
 				"InputCore",
 				"Slate",
 				"SlateCore"
-				// ... add private dependencies that you statically link with here ...	
+				// ... add private dependencies that you statically link with here ...
 			}
 			);
 
@@ -97,5 +103,8 @@ public class ImGui : ModuleRules
 #endif
 
 		PrivateDefinitions.Add(string.Format("RUNTIME_LOADER_ENABLED={0}", bEnableRuntimeLoader ? 1 : 0));
+
+		// Force ImPlot to export its methods in this module DLL so we can import them in our main project
+		PrivateDefinitions.Add("IMPLOT_API=DLLEXPORT");
 	}
 }

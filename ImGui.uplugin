@@ -16,7 +16,12 @@
 	"Modules": [
 		{
 			"Name": "ImGui",
-			"Type": "Developer",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault"
+		},
+		{
+			"Name": "ImGuiTS",
+			"Type": "Runtime",
 			"LoadingPhase": "PreDefault"
 		}
 	]

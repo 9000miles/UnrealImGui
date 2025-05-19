@@ -131,7 +131,7 @@ public:
 
 	/** Called to handle deactivation of the mouse input. */
 	virtual void OnMouseInputDisabled();
-
+	class FImGuiInputState* GetInputState()	{ return InputState; }
 protected:
 
 	/** Copy state of modifier keys to input state. */

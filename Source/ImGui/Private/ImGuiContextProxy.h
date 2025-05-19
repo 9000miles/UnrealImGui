@@ -40,7 +40,7 @@ public:
 
 	// Is this context the current ImGui context.
 	bool IsCurrentContext() const { return ImGui::GetCurrentContext() == Context; }
-
+  ImGuiContext* GetCurrentContext() const { return Context; }
 	// Set this context as current ImGui context.
 	void SetAsCurrent() { ImGui::SetCurrentContext(Context); }
 

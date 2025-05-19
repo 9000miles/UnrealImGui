@@ -32,7 +32,7 @@ void SImGuiLayout::Construct(const FArguments& InArgs)
 
 	ChildSlot
 	[
-		// Remove accumulated scale to manually control how we draw data. 
+		// Remove accumulated scale to manually control how we draw data.
 		SNew(SScaleBox)
 		.IgnoreInheritedScale(true)
 		.HAlign(HAlign_Fill)
@@ -48,10 +48,11 @@ void SImGuiLayout::Construct(const FArguments& InArgs)
 				+ SConstraintCanvas::Slot()
 				.Anchors(FAnchors(0.f, 0.f, 1.f, 1.f))
 				.AutoSize(true)
-				.Offset(FMargin(1.f, 1.f, 0.f, 1.f))
+				.Offset(FMargin(0.f, 0.f, 0.f, 0.f))
 				.Alignment(FVector2D::ZeroVector)
 				[
-					SNew(SImGuiWidget)
+					// SNew(SImGuiWidget)
+					SAssignNew(ImGuiWidget, SImGuiWidget)
 					.ModuleManager(InArgs._ModuleManager)
 					.GameViewport(InArgs._GameViewport)
 					.ContextIndex(InArgs._ContextIndex)
@@ -73,6 +74,13 @@ SImGuiLayout::~SImGuiLayout()
 	{
 		ModuleManager->GetSettings().OnDPIScaleChangedDelegate.RemoveAll(this);
 	}
+  ImGuiWidget.Reset();
+}
+
+void SImGuiLayout::NotifyActiveImGuiInputText(ImGuiInputTextCallbackData* Data) {
+  if (ImGuiWidget.IsValid()) {
+    ImGuiWidget->NotifyActiveImGuiInputText(Data);
+  }
 }
 
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION

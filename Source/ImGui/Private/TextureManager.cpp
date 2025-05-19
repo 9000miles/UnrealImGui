@@ -27,13 +27,16 @@ TextureIndex FTextureManager::CreatePlainTexture(const FName& Name, int32 Width,
 	return CreatePlainTextureInternal(Name, Width, Height, Color);
 }
 
-TextureIndex FTextureManager::CreateTextureResources(const FName& Name, UTexture2D* Texture)
+TextureIndex FTextureManager::CreateTextureResources(const FName& Name, UTexture* Texture)
 {
+  if (Texture == nullptr) {
+    return CreatePlainTexture(Name, 32, 32, FColor(0, 0, 0, 0));
+  }
 	checkf(Name != NAME_None, TEXT("Trying to create texture resources with a name 'NAME_None' is not allowed."));
 	checkf(Texture, TEXT("Null Texture."));
 
 	// Create an entry for the texture.
-	return AddTextureEntry(Name, Texture, false);
+	return AddTextureEntry(Name, Texture, true);
 }
 
 void FTextureManager::ReleaseTextureResources(TextureIndex Index)
@@ -41,6 +44,10 @@ void FTextureManager::ReleaseTextureResources(TextureIndex Index)
 	checkf(IsInRange(Index), TEXT("Invalid texture index %d. Texture resources array has %d entries total."), Index, TextureResources.Num());
 
 	TextureResources[Index] = {};
+}
+
+void FTextureManager::ClearTextureResources() {
+  TextureResources.Empty();
 }
 
 TextureIndex FTextureManager::CreateTextureInternal(const FName& Name, int32 Width, int32 Height, uint32 SrcBpp, uint8* SrcData, TFunction<void(uint8*)> SrcDataCleanup)
@@ -87,7 +94,7 @@ TextureIndex FTextureManager::CreatePlainTextureInternal(const FName& Name, int3
 	return CreateTextureInternal(Name, Width, Height, Bpp, SrcData, SrcDataCleanup);
 }
 
-TextureIndex FTextureManager::AddTextureEntry(const FName& Name, UTexture2D* Texture, bool bAddToRoot)
+TextureIndex FTextureManager::AddTextureEntry(const FName& Name, UTexture* Texture, bool bAddToRoot)
 {
 	// Try to find an entry with that name.
 	TextureIndex Index = FindTextureIndex(Name);
@@ -110,7 +117,7 @@ TextureIndex FTextureManager::AddTextureEntry(const FName& Name, UTexture2D* Tex
 	}
 }
 
-FTextureManager::FTextureEntry::FTextureEntry(const FName& InName, UTexture2D* InTexture, bool bAddToRoot)
+FTextureManager::FTextureEntry::FTextureEntry(const FName& InName, UTexture* InTexture, bool bAddToRoot)
 	: Name(InName)
 {
 	checkf(InTexture, TEXT("Null texture."));

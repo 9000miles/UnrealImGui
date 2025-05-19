@@ -10,6 +10,7 @@
 #include "ImGuiInteroperability.h"
 #include "ImGuiModuleManager.h"
 #include "ImGuiModuleSettings.h"
+#include "ImGuiTextInputMethodContext.h"
 #include "TextureManager.h"
 #include "Utilities/Arrays.h"
 #include "VersionCompatibility.h"
@@ -23,7 +24,7 @@
 #include <Widgets/SViewport.h>
 
 #include <utility>
-
+#include <imgui.h>
 
 #if IMGUI_WIDGET_DEBUG
 
@@ -113,18 +114,41 @@ void SImGuiWidget::Construct(const FArguments& InArgs)
 	UpdateVisibility();
 	UpdateMouseCursor();
 
-	ChildSlot
-	[
-		SAssignNew(CanvasControlWidget, SImGuiCanvasControl).OnTransformChanged(this, &SImGuiWidget::SetImGuiTransform)
-	];
+	// Support Slate Global Invalidation.
+	ForceVolatile(true);
+  bHasRegisteredTextInputMethodContext = false;
+  TextInputMethodContext = FImGuiTextInputMethodContext::Create(SharedThis(this));
 
-	ImGuiTransform = CanvasControlWidget->GetTransform();
+  ChildSlot[SAssignNew(CanvasControlWidget, SImGuiCanvasControl)
+                .OnTransformChanged(this, &SImGuiWidget::SetImGuiTransform)];
+
+  ImGuiTransform = CanvasControlWidget->GetTransform();
 }
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 SImGuiWidget::~SImGuiWidget()
 {
-	// Stop listening for settings change.
+  ITextInputMethodSystem* const TextInputMethodSystem =
+      FSlateApplication::IsInitialized()
+          ? FSlateApplication::Get().GetTextInputMethodSystem()
+          : nullptr;
+  if (TextInputMethodSystem && bHasRegisteredTextInputMethodContext) {
+    TSharedRef<FImGuiTextInputMethodContext> TextInputMethodContextRef =
+        TextInputMethodContext.ToSharedRef();
+
+    // Make sure that the context is marked as dead to avoid any further IME
+    // calls from trying to mutate our dying owner widget
+    TextInputMethodContextRef->KillContext();
+
+    if (TextInputMethodSystem->IsActiveContext(TextInputMethodContextRef)) {
+      // This can happen if an entire tree of widgets is culled, as Slate isn't
+      // notified of the focus loss, the widget is just deleted
+      TextInputMethodSystem->DeactivateContext(TextInputMethodContextRef);
+    }
+
+    TextInputMethodSystem->UnregisterContext(TextInputMethodContextRef);
+  }
+  // Stop listening for settings change.
 	UnregisterImGuiSettingsDelegates();
 
 	// Release ImGui Input Handler.
@@ -142,11 +166,74 @@ SImGuiWidget::~SImGuiWidget()
 	ModuleManager->OnPostImGuiUpdate().RemoveAll(this);
 }
 
+void SImGuiWidget::AddCharacter(TCHAR ch)
+{
+	if (InputHandler.IsValid() && InputHandler->GetInputState())
+	{
+		InputHandler->GetInputState()->AddCharacter(ch);
+	}
+}
+
+FVector2D SImGuiWidget::GetMousePosition() const {
+	if (InputHandler.IsValid() && InputHandler->GetInputState())
+	{
+		return InputHandler->GetInputState()->GetMousePosition();
+	}
+  return FVector2D(0, 0);
+}
+void SImGuiWidget::NotifyActiveImGuiInputText(
+    ImGuiInputTextCallbackData* Data) {
+  if ((Data->EventFlag & ImGuiInputTextFlags_CallbackActive) != 0) {
+    ImGuiContext* ImGuiContext = ImGui::GetCurrentContext();
+    if (ImGuiContext) {
+      ImGuiID ID = ImGui::GetActiveID();
+      // UE_LOG(LogUnrealImGui, Log, TEXT("Active InputText %d"),
+      // ImGuiContext->ActiveId);
+      CurrentActiveInputTextID = ImGuiContext->ActiveId;
+      CurrentInputTextBuf = Data->Buf;
+      CurrentActiveInputTextCallbackData = Data;
+    }
+    ITextInputMethodSystem* const TextInputMethodSystem =
+        FSlateApplication::Get().GetTextInputMethodSystem();
+    if (TextInputMethodSystem) {
+      if (!bHasRegisteredTextInputMethodContext) {
+        bHasRegisteredTextInputMethodContext = true;
+
+        TextInputMethodChangeNotifier = TextInputMethodSystem->RegisterContext(
+            TextInputMethodContext.ToSharedRef());
+        if (TextInputMethodChangeNotifier.IsValid()) {
+          TextInputMethodChangeNotifier->NotifyLayoutChanged(
+              ITextInputMethodChangeNotifier::ELayoutChangeType::Created);
+        }
+      }
+
+      TextInputMethodContext->CacheWindow();
+      TextInputMethodSystem->ActivateContext(
+          TextInputMethodContext.ToSharedRef());
+    }
+  } else if ((Data->EventFlag & ImGuiInputTextFlags_CallbackDeactive) != 0) {
+    ITextInputMethodSystem* const TextInputMethodSystem =
+        FSlateApplication::Get().GetTextInputMethodSystem();
+    if (TextInputMethodSystem && bHasRegisteredTextInputMethodContext) {
+      TextInputMethodSystem->DeactivateContext(
+          TextInputMethodContext.ToSharedRef());
+    }
+    CurrentInputTextBuf = nullptr;
+    // CurrentData = nullptr;
+  }
+}
+
 void SImGuiWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
 	Super::Tick(AllottedGeometry, InCurrentTime, InDeltaTime);
+  if (TextInputMethodChangeNotifier.IsValid() &&
+      TextInputMethodContext.IsValid() &&
+      TextInputMethodContext->UpdateCachedGeometry(AllottedGeometry)) {
+    TextInputMethodChangeNotifier->NotifyLayoutChanged(
+        ITextInputMethodChangeNotifier::ELayoutChangeType::Changed);
+  }
 
-	UpdateInputState();
+  UpdateInputState();
 	UpdateTransparentMouseInput(AllottedGeometry);
 	HandleWindowFocusLost();
 	UpdateCanvasSize();
@@ -214,7 +301,7 @@ FReply SImGuiWidget::OnMouseWheel(const FGeometry& MyGeometry, const FPointerEve
 
 FReply SImGuiWidget::OnMouseMove(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)
 {
-	return InputHandler->OnMouseMove(TransformScreenPointToImGui(MyGeometry, MouseEvent.GetScreenSpacePosition()), MouseEvent);
+  return InputHandler->OnMouseMove(TransformScreenPointToImGui(MyGeometry, MouseEvent.GetScreenSpacePosition()), MouseEvent);
 }
 
 FReply SImGuiWidget::OnFocusReceived(const FGeometry& MyGeometry, const FFocusEvent& FocusEvent)
@@ -222,8 +309,7 @@ FReply SImGuiWidget::OnFocusReceived(const FGeometry& MyGeometry, const FFocusEv
 	Super::OnFocusReceived(MyGeometry, FocusEvent);
 
 	IMGUI_WIDGET_LOG(VeryVerbose, TEXT("ImGui Widget %d - Focus Received."), ContextIndex);
-
-	bForegroundWindow = GameViewport->Viewport->IsForegroundWindow();
+  bForegroundWindow = GameViewport->Viewport->IsForegroundWindow();
 	InputHandler->OnKeyboardInputEnabled();
 	InputHandler->OnGamepadInputEnabled();
 
@@ -236,8 +322,7 @@ void SImGuiWidget::OnFocusLost(const FFocusEvent& FocusEvent)
 	Super::OnFocusLost(FocusEvent);
 
 	IMGUI_WIDGET_LOG(VeryVerbose, TEXT("ImGui Widget %d - Focus Lost."), ContextIndex);
-
-	InputHandler->OnKeyboardInputDisabled();
+  InputHandler->OnKeyboardInputDisabled();
 	InputHandler->OnGamepadInputDisabled();
 }
 
@@ -275,7 +360,7 @@ FReply SImGuiWidget::OnTouchEnded(const FGeometry& MyGeometry, const FPointerEve
 	return InputHandler->OnTouchEnded(TransformScreenPointToImGui(MyGeometry, TouchEvent.GetScreenSpacePosition()), TouchEvent);
 }
 
-void SImGuiWidget::CreateInputHandler(const FStringClassReference& HandlerClassReference)
+void SImGuiWidget::CreateInputHandler(const FSoftClassPath& HandlerClassReference)
 {
 	ReleaseInputHandler();
 
@@ -381,7 +466,7 @@ ULocalPlayer* SImGuiWidget::GetLocalPlayer() const
 
 void SImGuiWidget::TakeFocus()
 {
-	auto& SlateApplication = FSlateApplication::Get();
+  auto& SlateApplication = FSlateApplication::Get();
 
 	PreviousUserFocusedWidget = SlateApplication.GetUserFocusedWidget(SlateApplication.GetUserIndexForKeyboard());
 
@@ -399,7 +484,8 @@ void SImGuiWidget::TakeFocus()
 
 void SImGuiWidget::ReturnFocus()
 {
-	if (HasKeyboardFocus())
+
+  if (HasKeyboardFocus())
 	{
 		auto FocusWidgetPtr = PreviousUserFocusedWidget.IsValid()
 			? PreviousUserFocusedWidget.Pin()
@@ -441,13 +527,13 @@ void SImGuiWidget::UpdateInputState()
 		}
 	}
 
-	const bool bEnableInput = Properties.IsInputEnabled();
-	if (bInputEnabled != bEnableInput)
+	const bool bPropertiesInputEnabled = Properties.IsInputEnabled();
+	if (bInputEnabled != bPropertiesInputEnabled)
 	{
 		IMGUI_WIDGET_LOG(Log, TEXT("ImGui Widget %d - Input Enabled changed to '%s'."),
-			ContextIndex, TEXT_BOOL(bEnableInput));
+			ContextIndex, TEXT_BOOL(bPropertiesInputEnabled));
 
-		bInputEnabled = bEnableInput;
+		bInputEnabled = bPropertiesInputEnabled;
 
 		UpdateVisibility();
 		UpdateMouseCursor();
@@ -477,8 +563,9 @@ void SImGuiWidget::UpdateInputState()
 			// the whole input to match that state.
 			if (GameViewport->GetGameViewportWidget()->HasMouseCapture())
 			{
-				Properties.SetInputEnabled(false);
-				UpdateInputState();
+				// DON'T DISABLE OUR INPUT WHEN WE LOSE FOCUS
+				//Properties.SetInputEnabled(false);
+				//UpdateInputState();
 			}
 		}
 		else
@@ -632,6 +719,7 @@ int32 SImGuiWidget::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedGeo
 		// keep frame tearing at minimum because it is executed at the very end of the frame.
 		ContextProxy->Tick(FSlateApplication::Get().GetDeltaTime());
 
+
 		// Calculate transform from ImGui to screen space. Rounding translation is necessary to keep it pixel-perfect
 		// in older engine versions.
 		const FSlateRenderTransform& WidgetToScreen = AllottedGeometry.GetAccumulatedRenderTransform();
@@ -650,15 +738,11 @@ int32 SImGuiWidget::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedGeo
 			DrawList.CopyVertexData(VertexBuffer, ImGuiToScreen);
 #endif // ENGINE_COMPATIBILITY_LEGACY_CLIPPING_API
 
-			int IndexBufferOffset = 0;
 			for (int CommandNb = 0; CommandNb < DrawList.NumCommands(); CommandNb++)
 			{
 				const auto& DrawCommand = DrawList.GetCommand(CommandNb, ImGuiToScreen);
 
-				DrawList.CopyIndexData(IndexBuffer, IndexBufferOffset, DrawCommand.NumElements);
-
-				// Advance offset by number of copied elements to position it for the next command.
-				IndexBufferOffset += DrawCommand.NumElements;
+				DrawList.CopyIndexData(IndexBuffer, DrawCommand.IndexOffset, DrawCommand.NumElements);
 
 				// Get texture resource handle for this draw command (null index will be also mapped to a valid texture).
 				const FSlateResourceHandle& Handle = ModuleManager->GetTextureManager().GetTextureHandle(DrawCommand.TextureId);
@@ -793,6 +877,13 @@ namespace TwoColumns
 
 	template<typename LabelType>
 	static void Value(LabelType&& Label, float Value)
+	{
+		Text(Label); ImGui::NextColumn();
+		ImGui::Text("%f", Value); ImGui::NextColumn();
+	}
+
+	template<typename LabelType>
+	static void Value(LabelType&& Label, double Value)
 	{
 		Text(Label); ImGui::NextColumn();
 		ImGui::Text("%f", Value); ImGui::NextColumn();

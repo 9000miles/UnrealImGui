@@ -16,6 +16,7 @@ constexpr int32 IMGUI_WIDGET_Z_ORDER = 10000;
 
 // Module texture names.
 const static FName PlainTextureName = "ImGuiModule_Plain";
+const static FName EmptyTextureName = "ImGuiModule_Empty";
 const static FName FontAtlasTextureName = "ImGuiModule_FontAtlas";
 
 FImGuiModuleManager::FImGuiModuleManager()
@@ -74,6 +75,11 @@ FImGuiModuleManager::~FImGuiModuleManager()
 	UnregisterTick();
 }
 
+void FImGuiModuleManager::RebuildFontAtlas()
+{
+	ContextManager.RebuildFontAtlas();
+}
+
 void FImGuiModuleManager::LoadTextures()
 {
 	checkf(FSlateApplication::IsInitialized(), TEXT("Slate should be initialized before we can create textures."));
@@ -86,6 +92,7 @@ void FImGuiModuleManager::LoadTextures()
 
 		// Create an empty texture at index 0. We will use it for ImGui outputs with null texture id.
 		TextureManager.CreatePlainTexture(PlainTextureName, 2, 2, FColor::White);
+		TextureManager.CreatePlainTexture(EmptyTextureName, 2, 2, FColor(0, 0, 0, 0));
 
 		// Register for atlas built events, so we can rebuild textures.
 		ContextManager.OnFontAtlasBuilt.AddRaw(this, &FImGuiModuleManager::BuildFontAtlasTexture);
@@ -210,6 +217,16 @@ void FImGuiModuleManager::AddWidgetToViewport(UGameViewportClient* GameViewport)
 	}
 }
 
+void FImGuiModuleManager::NotifyActiveImGuiInputText(ImGuiInputTextCallbackData* Data) {
+	for (auto& Widget : Widgets)
+	{
+		auto SharedWidget = Widget.Pin();
+		if (SharedWidget.IsValid())
+		{
+			SharedWidget->NotifyActiveImGuiInputText(Data);
+		}
+	}
+}
 void FImGuiModuleManager::AddWidgetsToActiveViewports()
 {
 	if (FSlateApplication::IsInitialized() && GEngine)

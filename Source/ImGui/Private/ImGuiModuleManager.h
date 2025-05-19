@@ -22,7 +22,7 @@ public:
 	// Get interface to module settings.
 	FImGuiModuleSettings& GetSettings() { return Settings; }
 
-	// Get interface to module state properties. 
+	// Get interface to module state properties.
 	FImGuiModuleProperties& GetProperties() { return Properties; }
 
 	// Get ImGui contexts manager.
@@ -33,6 +33,8 @@ public:
 
 	// Event called right after ImGui is updated, to give other subsystems chance to react.
 	FSimpleMulticastDelegate& OnPostImGuiUpdate() { return PostImGuiUpdateEvent; }
+
+	void RebuildFontAtlas();
 
 private:
 
@@ -62,6 +64,7 @@ private:
 	void AddWidgetToViewport(UGameViewportClient* GameViewport);
 	void AddWidgetsToActiveViewports();
 
+	void NotifyActiveImGuiInputText(ImGuiInputTextCallbackData* Data);
 	void OnContextProxyCreated(int32 ContextIndex, FImGuiContextProxy& ContextProxy);
 
 	// Event that we call after ImGui is updated.
@@ -76,7 +79,7 @@ private:
 	// ImGui settings proxy (valid in every loading stage).
 	FImGuiModuleSettings Settings;
 
-	// Widget that we add to all created contexts to draw ImGui demo. 
+	// Widget that we add to all created contexts to draw ImGui demo.
 	FImGuiDemo ImGuiDemo;
 
 	// Manager for ImGui contexts.

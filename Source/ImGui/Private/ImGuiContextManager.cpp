@@ -5,11 +5,17 @@
 #include "ImGuiDelegatesContainer.h"
 #include "ImGuiImplementation.h"
 #include "ImGuiModuleSettings.h"
+#include "ImGuiModule.h"
 #include "Utilities/WorldContext.h"
 #include "Utilities/WorldContextIndex.h"
 
 #include <imgui.h>
+#include "Misc/Paths.h"
 
+// MSVC warnings
+#ifdef _MSC_VER
+#pragma warning (disable: 4996) // 'This function or variable may be unsafe': strcpy, strdup, sprintf, vsnprintf, sscanf, fopen
+#endif
 
 // TODO: Refactor ImGui Context Manager, to handle different types of worlds.
 
@@ -254,17 +260,118 @@ void FImGuiContextManager::SetDPIScale(const FImGuiDPIScaleInfo& ScaleInfo)
 	}
 }
 
-void FImGuiContextManager::BuildFontAtlas()
+void FImGuiContextManager::BuildDefaultFontAtlas() {
+  {
+    ImFontConfig FontConfig = {};
+    FontConfig.MergeMode = false;
+    FontConfig.FontDataOwnedByAtlas = true;
+    FontConfig.SizePixels = FMath::RoundFromZero(20.f * DPIScale);
+    FontConfig.GlyphOffset = ImVec2(0, FMath::RoundFromZero(0 * DPIScale));
+
+    // 在这里构建默认字体
+    // FString FontPath = FPaths::Combine(FPaths::ProjectPluginsDir(),
+    // TEXT("OpenZITSGUI/Resources/Fonts/NotoSansSC-Regular.otf"));
+    FString FontPath = FPaths::Combine(
+        FPaths::ProjectPluginsDir(),
+        TEXT("OpenZITSGUI/Resources/Fonts/DroidSansFallback.ttf"));
+    FallbackFont = FontAtlas.AddFontFromFileTTF(
+        TCHAR_TO_UTF8(*FontPath), FontConfig.SizePixels, &FontConfig,
+        FontAtlas.GetGlyphRangesChineseFull());
+    // unsigned char* Pixels;
+    // int Width, Height, Bpp;
+    // FontAtlas.GetTexDataAsRGBA32(&Pixels, &Width, &Height, &Bpp);
+    FontConfig.MergeMode = true;
+    FontPath =
+        FPaths::Combine(FPaths::ProjectPluginsDir(),
+                        TEXT("OpenZITSGUI/Resources/Fonts/FA6Solid.otf"));
+    FontConfig.SizePixels = FMath::RoundFromZero(19.f * DPIScale);
+    FontConfig.GlyphOffset = ImVec2(0, FMath::RoundFromZero(1 * DPIScale));
+    static const ImWchar IconFontRanges[] = {
+        0xe005,
+        0xf8ff,
+        0,
+    };
+    FontAtlas.AddFontFromFileTTF(TCHAR_TO_UTF8(*FontPath),
+                                 FontConfig.SizePixels, &FontConfig,
+                                 &IconFontRanges[0]);
+  }
+  return;
+  // TODO: 使用Fallback流程处理
+  TArray<FString> FontFaces = { "Roboto-Regular.ttf",     /* "Roboto-Light.ttf", */
+                               "Roboto-Italic.ttf",     "Roboto-Bold.ttf",
+                               /* "Roboto-BoldItalic.ttf", "Roboto-Black.ttf" */};
+  for (const auto& FontFace : FontFaces) {
+    ImFontConfig FontConfig = {};
+    FontConfig.MergeMode = false;
+    FontConfig.FontDataOwnedByAtlas = true;
+    FontConfig.SizePixels = FMath::RoundFromZero(20.f * DPIScale);
+    FontConfig.GlyphOffset = ImVec2(0, FMath::RoundFromZero(-2 * DPIScale));
+
+    // 在这里构建默认字体
+    // FString FontPath = FPaths::Combine(FPaths::ProjectPluginsDir(),
+    // TEXT("OpenZITSGUI/Resources/Fonts/NotoSansSC-Regular.otf"));
+    FString FontPath =
+        FPaths::Combine(FPaths::ProjectPluginsDir(),
+                        TEXT("OpenZITSGUI/Resources/Fonts"), FontFace);
+    ImFont* Font = FontAtlas.AddFontFromFileTTF(TCHAR_TO_UTF8(*FontPath),
+                                 FontConfig.SizePixels, &FontConfig);
+
+    Font->FallbackGlyph = FallbackFont->Glyphs.Data;
+    // ImFontConfig FontConfig = {};
+    // FontConfig.FontDataOwnedByAtlas = true;
+    // FontPath = FPaths::Combine(
+    //     FPaths::ProjectPluginsDir(),
+    //     TEXT("OpenZITSGUI/Resources/Fonts/DroidSansFallback.ttf"));
+    // FontConfig.SizePixels = FMath::RoundFromZero(20.f * DPIScale);
+    // FontConfig.GlyphOffset = ImVec2(0, FMath::RoundFromZero(0 * DPIScale));
+    // FontAtlas.AddFontFromFileTTF(TCHAR_TO_UTF8(*FontPath),
+    //                              FontConfig.SizePixels, &FontConfig,
+    //                              FontAtlas.GetGlyphRangesChineseFull());
+
+    FontConfig.MergeMode = true;
+    FontPath =
+        FPaths::Combine(FPaths::ProjectPluginsDir(),
+                        TEXT("OpenZITSGUI/Resources/Fonts/FA6Solid.otf"));
+    FontConfig.SizePixels = FMath::RoundFromZero(19.f * DPIScale);
+    FontConfig.GlyphOffset = ImVec2(0, FMath::RoundFromZero(1 * DPIScale));
+    static const ImWchar IconFontRanges[] = {
+        0xe005,
+        0xf8ff,
+        0,
+    };
+    FontAtlas.AddFontFromFileTTF(TCHAR_TO_UTF8(*FontPath),
+                                 FontConfig.SizePixels, &FontConfig,
+                                 &IconFontRanges[0]);
+  }
+}
+void FImGuiContextManager::BuildFontAtlas(const TMap<FName, TSharedPtr<ImFontConfig>>& CustomFontConfigs)
 {
 	if (!FontAtlas.IsBuilt())
 	{
-		ImFontConfig FontConfig = {};
-		FontConfig.SizePixels = FMath::RoundFromZero(13.f * DPIScale);
-		FontAtlas.AddFontDefault(&FontConfig);
+		BuildDefaultFontAtlas();
+
+		// Build custom fonts
+		for (const TPair<FName, TSharedPtr<ImFontConfig>>& CustomFontPair : CustomFontConfigs)
+		{
+			FName CustomFontName = CustomFontPair.Key;
+			TSharedPtr<ImFontConfig> CustomFontConfig = CustomFontPair.Value;
+
+			// Set font name for debugging
+			if (CustomFontConfig.IsValid())
+			{
+				strncpy(CustomFontConfig->Name, TCHAR_TO_ANSI(*CustomFontName.ToString()), 40);
+			}
+
+			FontAtlas.AddFont(CustomFontConfig.Get());
+		}
 
 		unsigned char* Pixels;
 		int Width, Height, Bpp;
 		FontAtlas.GetTexDataAsRGBA32(&Pixels, &Width, &Height, &Bpp);
+
+    // TODO: 貌似可以在这个位置添加FallbackGlyph
+
+
 
 		OnFontAtlasBuilt.Broadcast();
 	}
@@ -283,5 +390,5 @@ void FImGuiContextManager::RebuildFontAtlas()
 		FontResourcesReleaseCountdown = 3;
 	}
 
-	BuildFontAtlas();
+	BuildFontAtlas(FImGuiModule::Get().GetProperties().GetCustomFonts());
 }

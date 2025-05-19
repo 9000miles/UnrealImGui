@@ -31,6 +31,7 @@ public:
 
 	const TWeakObjectPtr<UGameViewportClient>& GetGameViewport() const { return GameViewport; }
 
+	void NotifyActiveImGuiInputText(ImGuiInputTextCallbackData* Data);
 private:
 
 	float GetDPIScale() const { return DPIScale; }
@@ -38,6 +39,7 @@ private:
 
 	FImGuiModuleManager* ModuleManager = nullptr;
 	TWeakObjectPtr<UGameViewportClient> GameViewport;
+	TSharedPtr<class SImGuiWidget> ImGuiWidget;
 
 	float DPIScale = 1.f;
 };
