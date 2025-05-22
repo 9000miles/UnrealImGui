@@ -1,34 +1,34 @@
 {
-  "FileVersion": 3,
-  "Version": 1,
-  "VersionName": "1.22",
-  "FriendlyName": "ImGui",
-  "Description": "",
-  "Category": "Debug",
-  "CreatedBy": "",
-  "CreatedByURL": "",
-  "DocsURL": "",
-  "MarketplaceURL": "",
-  "SupportURL": "",
-  "CanContainContent": false,
-  "IsBetaVersion": false,
-  "Installed": false,
-  "Modules": [
-    {
-      "Name": "ImGui",
-      "Type": "Runtime",
-      "LoadingPhase": "PreDefault"
-    },
-    {
-      "Name": "ImGuiTS",
-      "Type": "Runtime",
-      "LoadingPhase": "PreDefault"
-    }
-  ],
-  "Plugins": [
-    {
-      "Name": "ImGui",
-      "Enabled": true
-    }
-  ]
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.22",
+	"FriendlyName": "ImGui",
+	"Description": "",
+	"Category": "Debug",
+	"CreatedBy": "",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "ImGui",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault"
+		},
+		{
+			"Name": "ImGuiTS",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "Puerts",
+			"Enabled": true
+		}
+	]
 }

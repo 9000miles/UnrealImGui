@@ -7,8 +7,7 @@
 #include "ImGuiDelegates.h"
 #include "ImGuiSubsystem.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnImGuiRender);
-DECLARE_DYNAMIC_DELEGATE(FDelegateName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnImGuiDraw);
 
 /**
  * $Comment$
@@ -20,9 +19,11 @@ class UImGuiSubsystem : public UGameInstanceSubsystem, public FTickableGameObjec
 public:
 	void Initialize(FSubsystemCollectionBase& Collection) override;
 	void Deinitialize() override;
-	void OnImGuiRender();
 	void Tick(float DeltaTime) override;
 	TStatId GetStatId() const override;
+
+protected:
+	void TickDraw();
 
 public:
 	UFUNCTION(BlueprintPure, Category = "ImGui")
@@ -30,10 +31,8 @@ public:
 
 private:
 	UPROPERTY()
-	FOnImGuiRender OnRender;
-	static UImGuiSubsystem* Instance;
+	FOnImGuiDraw OnDraw;
 
-#ifdef IMGUI_API
-	FImGuiDelegateHandle DelegateHandle;
-#endif
+private:
+	static UImGuiSubsystem* Instance;
 };
