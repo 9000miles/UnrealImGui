@@ -270,10 +270,10 @@ void FImGuiContextManager::BuildDefaultFontAtlas() {
 
     // 在这里构建默认字体
     // FString FontPath = FPaths::Combine(FPaths::ProjectPluginsDir(),
-    // TEXT("OpenZITSGUI/Resources/Fonts/NotoSansSC-Regular.otf"));
+    // TEXT("UnrealImGui/Resources/Fonts/NotoSansSC-Regular.otf"));
     FString FontPath = FPaths::Combine(
         FPaths::ProjectPluginsDir(),
-        TEXT("OpenZITSGUI/Resources/Fonts/DroidSansFallback.ttf"));
+        TEXT("UnrealImGui/Resources/Fonts/DroidSansFallback.ttf"));
     FallbackFont = FontAtlas.AddFontFromFileTTF(
         TCHAR_TO_UTF8(*FontPath), FontConfig.SizePixels, &FontConfig,
         FontAtlas.GetGlyphRangesChineseFull());
@@ -283,7 +283,7 @@ void FImGuiContextManager::BuildDefaultFontAtlas() {
     FontConfig.MergeMode = true;
     FontPath =
         FPaths::Combine(FPaths::ProjectPluginsDir(),
-                        TEXT("OpenZITSGUI/Resources/Fonts/FA6Solid.otf"));
+                        TEXT("UnrealImGui/Resources/Fonts/FA6Solid.otf"));
     FontConfig.SizePixels = FMath::RoundFromZero(19.f * DPIScale);
     FontConfig.GlyphOffset = ImVec2(0, FMath::RoundFromZero(1 * DPIScale));
     static const ImWchar IconFontRanges[] = {
@@ -309,10 +309,10 @@ void FImGuiContextManager::BuildDefaultFontAtlas() {
 
     // 在这里构建默认字体
     // FString FontPath = FPaths::Combine(FPaths::ProjectPluginsDir(),
-    // TEXT("OpenZITSGUI/Resources/Fonts/NotoSansSC-Regular.otf"));
+    // TEXT("UnrealImGui/Resources/Fonts/NotoSansSC-Regular.otf"));
     FString FontPath =
         FPaths::Combine(FPaths::ProjectPluginsDir(),
-                        TEXT("OpenZITSGUI/Resources/Fonts"), FontFace);
+                        TEXT("UnrealImGui/Resources/Fonts"), FontFace);
     ImFont* Font = FontAtlas.AddFontFromFileTTF(TCHAR_TO_UTF8(*FontPath),
                                  FontConfig.SizePixels, &FontConfig);
 
@@ -321,7 +321,7 @@ void FImGuiContextManager::BuildDefaultFontAtlas() {
     // FontConfig.FontDataOwnedByAtlas = true;
     // FontPath = FPaths::Combine(
     //     FPaths::ProjectPluginsDir(),
-    //     TEXT("OpenZITSGUI/Resources/Fonts/DroidSansFallback.ttf"));
+    //     TEXT("UnrealImGui/Resources/Fonts/DroidSansFallback.ttf"));
     // FontConfig.SizePixels = FMath::RoundFromZero(20.f * DPIScale);
     // FontConfig.GlyphOffset = ImVec2(0, FMath::RoundFromZero(0 * DPIScale));
     // FontAtlas.AddFontFromFileTTF(TCHAR_TO_UTF8(*FontPath),
@@ -331,7 +331,7 @@ void FImGuiContextManager::BuildDefaultFontAtlas() {
     FontConfig.MergeMode = true;
     FontPath =
         FPaths::Combine(FPaths::ProjectPluginsDir(),
-                        TEXT("OpenZITSGUI/Resources/Fonts/FA6Solid.otf"));
+                        TEXT("UnrealImGui/Resources/Fonts/FA6Solid.otf"));
     FontConfig.SizePixels = FMath::RoundFromZero(19.f * DPIScale);
     FontConfig.GlyphOffset = ImVec2(0, FMath::RoundFromZero(1 * DPIScale));
     static const ImWchar IconFontRanges[] = {
