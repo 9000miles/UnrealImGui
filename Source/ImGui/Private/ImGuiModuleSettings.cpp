@@ -194,7 +194,7 @@ void FImGuiModuleSettings::SetToggleInputKey(const FImGuiKeyInfo& KeyInfo)
 	if (ToggleInputKey != KeyInfo)
 	{
 		ToggleInputKey = KeyInfo;
-		Commands.SetKeyBinding(FImGuiModuleCommands::ToggleInput, ToggleInputKey);
+		Commands.SetKeyBinding(FImGuiModuleCommands::ToggleDemo, ToggleInputKey);
 	}
 }
 

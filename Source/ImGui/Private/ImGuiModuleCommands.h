@@ -13,14 +13,14 @@ class FImGuiModuleCommands
 {
 public:
 
-	static const TCHAR* const ToggleInput;
+	//static const TCHAR* const ToggleInput;
 	// static const TCHAR* const ToggleKeyboardNavigation;
 	// static const TCHAR* const ToggleGamepadNavigation;
 	// static const TCHAR* const ToggleKeyboardInputSharing;
 	// static const TCHAR* const ToggleGamepadInputSharing;
 	// static const TCHAR* const ToggleMouseInputSharing;
 	// static const TCHAR* const SetMouseInputSharing;
-	// static const TCHAR* const ToggleDemo;
+	 static const TCHAR* const ToggleDemo;
 
 	FImGuiModuleCommands(FImGuiModuleProperties& InProperties);
 
@@ -28,23 +28,23 @@ public:
 
 private:
 
-	void ToggleInputImpl();
+	//void ToggleInputImpl();
 	// void ToggleKeyboardNavigationImpl();
 	// void ToggleGamepadNavigationImpl();
 	// void ToggleKeyboardInputSharingImpl();
 	// void ToggleGamepadInputSharingImpl();
 	// void ToggleMouseInputSharingImpl();
 	// void SetMouseInputSharingImpl(const TArray< FString >& Args);
-	// void ToggleDemoImpl();
+	 void ToggleDemoImpl();
 
 	FImGuiModuleProperties& Properties;
 
-	FAutoConsoleCommand ToggleInputCommand;
+	//FAutoConsoleCommand ToggleInputCommand;
 	// FAutoConsoleCommand ToggleKeyboardNavigationCommand;
 	// FAutoConsoleCommand ToggleGamepadNavigationCommand;
 	// FAutoConsoleCommand ToggleKeyboardInputSharingCommand;
 	// FAutoConsoleCommand ToggleGamepadInputSharingCommand;
 	// FAutoConsoleCommand ToggleMouseInputSharingCommand;
 	// FAutoConsoleCommand SetMouseInputSharingCommand;
-	// FAutoConsoleCommand ToggleDemoCommand;
+	 FAutoConsoleCommand ToggleDemoCommand;
 };

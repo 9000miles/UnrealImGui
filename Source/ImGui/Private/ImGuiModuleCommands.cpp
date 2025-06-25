@@ -6,20 +6,20 @@
 #include "Utilities/DebugExecBindings.h"
 
 
-const TCHAR* const FImGuiModuleCommands::ToggleInput = TEXT("ImGui.ToggleInput");
+// const TCHAR* const FImGuiModuleCommands::ToggleInput = TEXT("ImGui.ToggleInput");
 // const TCHAR* const FImGuiModuleCommands::ToggleKeyboardNavigation = TEXT("ImGui.ToggleKeyboardNavigation");
 // const TCHAR* const FImGuiModuleCommands::ToggleGamepadNavigation = TEXT("ImGui.ToggleGamepadNavigation");
 // const TCHAR* const FImGuiModuleCommands::ToggleKeyboardInputSharing = TEXT("ImGui.ToggleKeyboardInputSharing");
 // const TCHAR* const FImGuiModuleCommands::ToggleGamepadInputSharing = TEXT("ImGui.ToggleGamepadInputSharing");
 // const TCHAR* const FImGuiModuleCommands::ToggleMouseInputSharing = TEXT("ImGui.ToggleMouseInputSharing");
 // const TCHAR* const FImGuiModuleCommands::SetMouseInputSharing = TEXT("ImGui.SetMouseInputSharing");
-// const TCHAR* const FImGuiModuleCommands::ToggleDemo = TEXT("ImGui.ToggleDemo");
+const TCHAR* const FImGuiModuleCommands::ToggleDemo = TEXT("ImGui.ToggleDemo");
 
 FImGuiModuleCommands::FImGuiModuleCommands(FImGuiModuleProperties& InProperties)
 	: Properties(InProperties)
-	, ToggleInputCommand(ToggleInput,
-		TEXT("Toggle ImGui input mode."),
-		FConsoleCommandDelegate::CreateRaw(this, &FImGuiModuleCommands::ToggleInputImpl))
+	//, ToggleInputCommand(ToggleInput,
+	//	TEXT("Toggle ImGui input mode."),
+	//	FConsoleCommandDelegate::CreateRaw(this, &FImGuiModuleCommands::ToggleInputImpl))
 	// , ToggleKeyboardNavigationCommand(ToggleKeyboardNavigation,
 	// 	TEXT("Toggle ImGui keyboard navigation."),
 	// 	FConsoleCommandDelegate::CreateRaw(this, &FImGuiModuleCommands::ToggleKeyboardNavigationImpl))
@@ -38,9 +38,9 @@ FImGuiModuleCommands::FImGuiModuleCommands(FImGuiModuleProperties& InProperties)
 	// , SetMouseInputSharingCommand(SetMouseInputSharing,
 	// 	TEXT("Toggle ImGui mouse input sharing."),
 	// 	FConsoleCommandWithArgsDelegate::CreateRaw(this, &FImGuiModuleCommands::SetMouseInputSharingImpl))
-	// , ToggleDemoCommand(ToggleDemo,
-	// 	TEXT("Toggle ImGui demo."),
-	// 	FConsoleCommandDelegate::CreateRaw(this, &FImGuiModuleCommands::ToggleDemoImpl))
+	 , ToggleDemoCommand(ToggleDemo,
+		TEXT("Toggle ImGui demo."),
+		FConsoleCommandDelegate::CreateRaw(this, &FImGuiModuleCommands::ToggleDemoImpl))
 {
 }
 
@@ -49,10 +49,10 @@ void FImGuiModuleCommands::SetKeyBinding(const TCHAR* CommandName, const FImGuiK
 	DebugExecBindings::UpdatePlayerInputs(KeyInfo, CommandName);
 }
 
-void FImGuiModuleCommands::ToggleInputImpl()
-{
-	Properties.ToggleInput();
-}
+//void FImGuiModuleCommands::ToggleInputImpl()
+//{
+//	Properties.ToggleInput();
+//}
 
 // void FImGuiModuleCommands::ToggleKeyboardNavigationImpl()
 // {
@@ -89,7 +89,7 @@ void FImGuiModuleCommands::ToggleInputImpl()
 // 	Properties.SetMouseInputShared(bIsEnabled);
 // }
 
-// void FImGuiModuleCommands::ToggleDemoImpl()
-// {
-// 	Properties.ToggleDemo();
-// }
+ void FImGuiModuleCommands::ToggleDemoImpl()
+ {
+ 	Properties.ToggleDemo();
+ }
