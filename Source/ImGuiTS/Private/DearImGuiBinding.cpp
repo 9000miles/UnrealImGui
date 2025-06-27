@@ -799,7 +799,10 @@ struct AutoRegisterForDearImGui {
         .Function("DockBuilderRemoveNodeDockedWindows", MakeFunction(&ImGui::DockBuilderRemoveNodeDockedWindows))
         .Function("DockBuilderRemoveNodeChildNodes", MakeFunction(&ImGui::DockBuilderRemoveNodeChildNodes))
         .Function("DockBuilderFinish", MakeFunction(&ImGui::DockBuilderFinish))
-        .Function("Combo", SelectFunction(bool (*)(const char*, int*, const char*, int), &ImGui::Combo))    .Register();
+        .Function("Combo", SelectFunction(bool (*)(const char*, int*, const char*, int), &ImGui::Combo))
+        .Function("PlotLines", SelectFunction(void (*)(const char*, const float*, int, int, const char*, float, float, ImVec2, int), &ImGui::PlotLines))
+        .Function("PlotHistogram", SelectFunction(void (*)(const char*, const float*, int, int, const char*, float, float, ImVec2, int), &ImGui::PlotLines))
+        .Register();
   }
 };
 
