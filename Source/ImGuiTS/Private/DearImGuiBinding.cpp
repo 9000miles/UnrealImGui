@@ -800,8 +800,8 @@ struct AutoRegisterForDearImGui {
         .Function("DockBuilderRemoveNodeChildNodes", MakeFunction(&ImGui::DockBuilderRemoveNodeChildNodes))
         .Function("DockBuilderFinish", MakeFunction(&ImGui::DockBuilderFinish))
         .Function("Combo", SelectFunction(bool (*)(const char*, int*, const char*, int), &ImGui::Combo))
-        .Function("PlotLines", SelectFunction(void (*)(const char*, const float*, int, int, const char*, float, float, ImVec2, int), &ImGui::PlotLines))
-        .Function("PlotHistogram", SelectFunction(void (*)(const char*, const float*, int, int, const char*, float, float, ImVec2, int), &ImGui::PlotLines))
+        .Function("PlotLines", MakeFunctionWithScriptTypePtr(&Wrapper::PlotLines))
+        .Function("PlotHistogram", MakeFunctionWithScriptTypePtr(&Wrapper::PlotHistogram))
         .Register();
   }
 };

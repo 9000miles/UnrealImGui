@@ -5,6 +5,7 @@
 #include "ImGuiModuleProperties.h"
 
 #include <CoreGlobals.h>
+#include "implot.h"
 
 
 // Demo copied (with minor modifications) from ImGui examples. See https://github.com/ocornut/imgui.
@@ -77,7 +78,9 @@ void FImGuiDemo::DrawControls(int32 ContextIndex)
 
 			// Draw demo window.
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
-			ImGui::ShowDemoWindow();
+			//ImGui::ShowDemoWindow();
+			static bool bDemo = true;
+			ImPlot::ShowDemoWindow(&bDemo);
 		}
 	}
 }
