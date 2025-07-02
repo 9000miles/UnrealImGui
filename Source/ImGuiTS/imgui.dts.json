@@ -1,0 +1,1224 @@
+{
+  "BeginChild": {
+    "params": [
+      {
+        "name": "str_id",
+        "type": "const char*"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "child_flags",
+        "type": "ImGuiChildFlags"
+      },
+      {
+        "name": "window_flags",
+        "type": "ImGuiWindowFlags"
+      }
+    ],
+    "comment": "Child Windows\n- Use child windows to begin into a self-contained independent scrolling/clipping regions within a host window. Child windows can embed their own child.\n- Before 1.90 (November 2023), the \"ImGuiChildFlags child_flags = 0\" parameter was \"bool border = false\".\n//   This API is backward compatible with old code, as we guarantee that ImGuiChildFlags_Border == true.\n//   Consider updating your old code:\n//      BeginChild(\"Name\", size, false)   -> Begin(\"Name\", size, 0); or Begin(\"Name\", size, ImGuiChildFlags_None);\n//      BeginChild(\"Name\", size, true)    -> Begin(\"Name\", size, ImGuiChildFlags_Border);\n- Manual sizing (each axis can use a different setting e.g. ImVec2(0.0f, 400.0f)):\n//     == 0.0f: use remaining parent window size for this axis.\n//      > 0.0f: use specified size for this axis.\n//      < 0.0f: right/bottom-align to specified distance from available content boundaries.\n- Specifying ImGuiChildFlags_AutoResizeX or ImGuiChildFlags_AutoResizeY makes the sizing automatic based on child contents.\n//   Combining both ImGuiChildFlags_AutoResizeX _and_ ImGuiChildFlags_AutoResizeY defeats purpose of a scrolling region and is NOT recommended.\n- BeginChild() returns false to indicate the window is collapsed or fully clipped, so you may early out and omit submitting\n//   anything to the window. Always call a matching EndChild() for each BeginChild() call, regardless of its return value.\n//   [Important: due to legacy reason, Begin/End and BeginChild/EndChild are inconsistent with all other functions\n//    such as BeginMenu/EndMenu, BeginPopup/EndPopup, etc. where the EndXXX call should only be called if the corresponding\n//    BeginXXX function returned true. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]"
+  },
+  "BeginChild_1": {
+    "params": [
+      {
+        "name": "id",
+        "type": "ImGuiID"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "child_flags",
+        "type": "ImGuiChildFlags"
+      },
+      {
+        "name": "window_flags",
+        "type": "ImGuiWindowFlags"
+      }
+    ],
+    "comment": ""
+  },
+  "SetNextWindowPos": {
+    "params": [
+      {
+        "name": "pos",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "cond",
+        "type": "ImGuiCond"
+      },
+      {
+        "name": "pivot",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": "Window manipulation\n- Prefer using SetNextXXX functions (before Begin) rather that SetXXX functions (after Begin).\nset next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc."
+  },
+  "SetWindowPos_1": {
+    "params": [
+      {
+        "name": "name",
+        "type": "const char*"
+      },
+      {
+        "name": "pos",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "cond",
+        "type": "ImGuiCond"
+      }
+    ],
+    "comment": "set named window position."
+  },
+  "SetWindowSize_1": {
+    "params": [
+      {
+        "name": "name",
+        "type": "const char*"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "cond",
+        "type": "ImGuiCond"
+      }
+    ],
+    "comment": "set named window size. set axis to 0.0f to force an auto-fit on this axis."
+  },
+  "SetWindowCollapsed_1": {
+    "params": [
+      {
+        "name": "name",
+        "type": "const char*"
+      },
+      {
+        "name": "collapsed",
+        "type": "bool"
+      },
+      {
+        "name": "cond",
+        "type": "ImGuiCond"
+      }
+    ],
+    "comment": "set named window collapsed state"
+  },
+  "SetWindowFocus_1": {
+    "params": [
+      {
+        "name": "name",
+        "type": "const char*"
+      }
+    ],
+    "comment": "set named window to be focused / top-most. use NULL to remove focus."
+  },
+  "PushStyleColor_1": {
+    "params": [
+      {
+        "name": "idx",
+        "type": "ImGuiCol"
+      },
+      {
+        "name": "col",
+        "type": "const ImVec4&"
+      }
+    ],
+    "comment": ""
+  },
+  "PushStyleVar_1": {
+    "params": [
+      {
+        "name": "idx",
+        "type": "ImGuiStyleVar"
+      },
+      {
+        "name": "val",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": "modify a style ImVec2 variable. always use this if you modify the style after NewFrame()."
+  },
+  "GetColorU32_1": {
+    "params": [
+      {
+        "name": "col",
+        "type": "const ImVec4&"
+      }
+    ],
+    "comment": "retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList"
+  },
+  "GetColorU32_2": {
+    "params": [
+      {
+        "name": "idx",
+        "type": "ImGuiCol"
+      },
+      {
+        "name": "alpha_mul",
+        "type": "float"
+      }
+    ],
+    "comment": "retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for ImDrawList"
+  },
+  "PushID_1": {
+    "params": [
+      {
+        "name": "str_id_begin",
+        "type": "const char*"
+      },
+      {
+        "name": "str_id_end",
+        "type": "const char*"
+      }
+    ],
+    "comment": "push string into the ID stack (will hash string)."
+  },
+  "PushID_2": {
+    "params": [
+      {
+        "name": "ptr_id",
+        "type": "const void*"
+      }
+    ],
+    "comment": "push pointer into the ID stack (will hash pointer)."
+  },
+  "PushID_3": {
+    "params": [
+      {
+        "name": "int_id",
+        "type": "int"
+      }
+    ],
+    "comment": "push integer into the ID stack (will hash integer)."
+  },
+  "GetID_1": {
+    "params": [
+      {
+        "name": "str_id_begin",
+        "type": "const char*"
+      },
+      {
+        "name": "str_id_end",
+        "type": "const char*"
+      }
+    ],
+    "comment": ""
+  },
+  "GetID_2": {
+    "params": [
+      {
+        "name": "ptr_id",
+        "type": "const void*"
+      }
+    ],
+    "comment": ""
+  },
+  "Text": {
+    "params": [
+      {
+        "name": "text",
+        "type": "const char*"
+      }
+    ],
+    "comment": ""
+  },
+  "TextColored": {
+    "params": [
+      {
+        "name": "col",
+        "type": "ImVec4 const&"
+      },
+      {
+        "name": "text",
+        "type": "const char*"
+      }
+    ],
+    "comment": ""
+  },
+  "TextDisabled": {
+    "params": [
+      {
+        "name": "text",
+        "type": "const char*"
+      }
+    ],
+    "comment": ""
+  },
+  "TextWrapped": {
+    "params": [
+      {
+        "name": "text",
+        "type": "const char*"
+      }
+    ],
+    "comment": ""
+  },
+  "LabelText": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "format",
+        "type": "const char*"
+      }
+    ],
+    "comment": ""
+  },
+  "BulletText": {
+    "params": [
+      {
+        "name": "text",
+        "type": "const char*"
+      }
+    ],
+    "comment": ""
+  },
+  "Button": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": "Widgets: Main\n- Most widgets return true when the value has been changed or when pressed/selected\n- You may also use one of the many IsItemXXX functions (e.g. IsItemActive, IsItemHovered, etc.) to query widget state."
+  },
+  "CheckboxFlags_1": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "flags",
+        "type": "unsigned int*"
+      },
+      {
+        "name": "flags_value",
+        "type": "unsigned int"
+      }
+    ],
+    "comment": ""
+  },
+  "RadioButton_1": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "v",
+        "type": "int*"
+      },
+      {
+        "name": "v_button",
+        "type": "int"
+      }
+    ],
+    "comment": "shortcut to handle the above pattern when value is an integer"
+  },
+  "ProgressBar": {
+    "params": [
+      {
+        "name": "fraction",
+        "type": "float"
+      },
+      {
+        "name": "size_arg",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "overlay",
+        "type": "const char*"
+      }
+    ],
+    "comment": ""
+  },
+  "ColorButton": {
+    "params": [
+      {
+        "name": "desc_id",
+        "type": "const char*"
+      },
+      {
+        "name": "col",
+        "type": "const ImVec4&"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiSelectableFlags"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": "display a color square/button, hover for details, return true when pressed."
+  },
+  "TreeNode_1": {
+    "params": [
+      {
+        "name": "str_id",
+        "type": "void const*"
+      },
+      {
+        "name": "fmt",
+        "type": "char const*"
+      }
+    ],
+    "comment": ""
+  },
+  "TreeNode_2": {
+    "params": [
+      {
+        "name": "ptr_id",
+        "type": "void const*"
+      },
+      {
+        "name": "fmt",
+        "type": "char const*"
+      }
+    ],
+    "comment": ""
+  },
+  "TreeNodeEx_1": {
+    "params": [
+      {
+        "name": "str_id",
+        "type": "char const*"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiTreeNodeFlags"
+      },
+      {
+        "name": "fmt",
+        "type": "char const*"
+      }
+    ],
+    "comment": ""
+  },
+  "TreeNodeEx_2": {
+    "params": [
+      {
+        "name": "ptr_id",
+        "type": "void const*"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiTreeNodeFlags"
+      },
+      {
+        "name": "fmt",
+        "type": "char const*"
+      }
+    ],
+    "comment": ""
+  },
+  "TreePush_1": {
+    "params": [
+      {
+        "name": "ptr_id",
+        "type": "const void*"
+      }
+    ]
+  },
+  "CollapsingHeader_1": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "p_visible",
+        "type": "bool*"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiSelectableFlags"
+      }
+    ],
+    "comment": "when 'p_visible != NULL': if '*p_visible==true' display an additional small close button on upper right of the header which will set the bool to false when clicked, if '*p_visible==false' don't display the header."
+  },
+  "Selectable": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "selected",
+        "type": "bool"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiSelectableFlags"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": "\"bool selected\" carry the selection state (read-only). Selectable() is clicked is returns true so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height"
+  },
+  "Selectable_1": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "p_selected",
+        "type": "bool*"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiSelectableFlags"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": "\"bool* p_selected\" point to the selection state (read-write), as a convenient helper."
+  },
+  "BeginListBox": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": "Widgets: List Boxes\n- This is essentially a thin wrapper to using BeginChild/EndChild with the ImGuiChildFlags_FrameStyle flag for stylistic changes + displaying a label.\n- You can submit contents and manage your selection state however you want it, by creating e.g. Selectable() or any other items.\n- The simplified/old ListBox() api are helpers over BeginListBox()/EndListBox() which are kept available for convenience purpose. This is analoguous to how Combos are created.\n- Choose frame width:   size.x > 0.0f: custom  /  size.x < 0.0f or -FLT_MIN: right-align   /  size.x = 0.0f (default): use current ItemWidth\n- Choose frame height:  size.y > 0.0f: custom  /  size.y < 0.0f or -FLT_MIN: bottom-align  /  size.y = 0.0f (default): arbitrary default height which can fit ~7 items\n open a framed scrolling region"
+  },
+  "Value_1": {
+    "params": [
+      {
+        "name": "prefix",
+        "type": "const char*"
+      },
+      {
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "comment": ""
+  },
+  "Value_2": {
+    "params": [
+      {
+        "name": "prefix",
+        "type": "const char*"
+      },
+      {
+        "name": "value",
+        "type": "unsigned int"
+      }
+    ],
+    "comment": ""
+  },
+  "Value_3": {
+    "params": [
+      {
+        "name": "prefix",
+        "type": "const char*"
+      },
+      {
+        "name": "value",
+        "type": "float"
+      },
+      {
+        "name": "float_format",
+        "type": "const char*"
+      }
+    ],
+    "comment": ""
+  },
+  "MenuItem_1": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "shortcut",
+        "type": "const char*"
+      },
+      {
+        "name": "p_selected",
+        "type": "bool*"
+      },
+      {
+        "name": "enabled",
+        "type": "bool"
+      }
+    ],
+    "comment": "return true when activated + toggle (*p_selected) if p_selected != NULL"
+  },
+  "SetTooltip": {
+    "params": [
+      {
+        "name": "text",
+        "type": "const char*"
+      }
+    ],
+    "comment": "set a text-only tooltip. Often used after a ImGui::IsItemHovered() check. Override any previous call to SetTooltip()."
+  },
+  "SetItemTooltip": {
+    "params": [
+      {
+        "name": "text",
+        "type": "const char*"
+      }
+    ],
+    "comment": "set a text-only tooltip if preceeding item was hovered. override any previous call to SetTooltip()."
+  },
+  "OpenPopup_1": {
+    "params": [
+      {
+        "name": "id",
+        "type": "unsigned int"
+      },
+      {
+        "name": "popup_flags",
+        "type": "ImGuiPopupFlags"
+      }
+    ],
+    "comment": "id overload to facilitate calling from nested stacks"
+  },
+  "BeginTable": {
+    "params": [
+      {
+        "name": "str_id",
+        "type": "const char*"
+      },
+      {
+        "name": "column",
+        "type": "int"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiTableFlags"
+      },
+      {
+        "name": "outer_size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "inner_width",
+        "type": "float"
+      }
+    ],
+    "comment": "Tables\n- Full-featured replacement for old Columns API.\n- See Demo->Tables for demo code. See top of imgui_tables.cpp for general commentary.\n- See ImGuiTableFlags_ and ImGuiTableColumnFlags_ enums for a description of available flags.\nThe typical call flow is:\n- 1. Call BeginTable(), early out if returning false.\n- 2. Optionally call TableSetupColumn() to submit column name/flags/defaults.\n- 3. Optionally call TableSetupScrollFreeze() to request scroll freezing of columns/rows.\n- 4. Optionally call TableHeadersRow() to submit a header row. Names are pulled from TableSetupColumn() data.\n- 5. Populate contents:\n//    - In most situations you can use TableNextRow() + TableSetColumnIndex(N) to start appending into a column.\n//    - If you are using tables as a sort of grid, where every column is holding the same type of contents,\n//      you may prefer using TableNextColumn() instead of TableNextRow() + TableSetColumnIndex().\n//      TableNextColumn() will automatically wrap-around into the next row if needed.\n//    - IMPORTANT: Comparatively to the old Columns() API, we need to call TableNextColumn() for the first column!\n//    - Summary of possible call flow:\n//        - TableNextRow() -> TableSetColumnIndex(0) -> Text(\"Hello 0\") -> TableSetColumnIndex(1) -> Text(\"Hello 1\")  OK\n//        - TableNextRow() -> TableNextColumn()      -> Text(\"Hello 0\") -> TableNextColumn()      -> Text(\"Hello 1\")  OK\n//        -                   TableNextColumn()      -> Text(\"Hello 0\") -> TableNextColumn()      -> Text(\"Hello 1\")  OK: TableNextColumn() automatically gets to next row!\n//        - TableNextRow()                           -> Text(\"Hello 0\")                                               Not OK! Missing TableSetColumnIndex() or TableNextColumn()! Text will not appear!\n- 5. Call EndTable()"
+  },
+  "DockSpace": {
+    "params": [
+      {
+        "name": "id",
+        "type": "unsigned int"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiDockNodeFlags"
+      },
+      {
+        "name": "windowClass",
+        "type": "const ImGuiWindowClass*"
+      }
+    ],
+    "comment": "Docking\n[BETA API] Enable with io.ConfigFlags |= ImGuiConfigFlags_DockingEnable.\nNote: You can use most Docking facilities without calling any API. You DO NOT need to call DockSpace() to use Docking!\n- Drag from window title bar or their tab to dock/undock. Hold SHIFT to disable docking.\n- Drag from window menu button (upper-left button) to undock an entire node (all windows).\n- When io.ConfigDockingWithShift == true, you instead need to hold SHIFT to enable docking.\nAbout dockspaces:\n- Use DockSpaceOverViewport() to create an explicit dock node covering the screen or a specific viewport.\n//   This is often used with ImGuiDockNodeFlags_PassthruCentralNode to make it transparent.\n- Use DockSpace() to create an explicit dock node _within_ an existing window. See Docking demo for details.\n- Important: Dockspaces need to be submitted _before_ any window they can host. Submit it early in your frame!\n- Important: Dockspaces need to be kept alive if hidden, otherwise windows docked into it will be undocked.\n//   e.g. if you have multiple tabs with a dockspace inside each tab: submit the non-visible dockspaces with ImGuiDockNodeFlags_KeepAliveOnly."
+  },
+  "LogText": {
+    "params": [
+      {
+        "name": "text",
+        "type": "string"
+      }
+    ],
+    "comment": "pass text data straight to log (without being displayed)"
+  },
+  "GetBackgroundDrawList_1": {
+    "params": [
+      {
+        "name": "viewport",
+        "type": "ImGuiViewport*"
+      }
+    ],
+    "comment": "get background draw list for the given viewport. this draw list will be the first rendering one. Useful to quickly draw shapes/text behind dear imgui contents."
+  },
+  "GetForegroundDrawList_1": {
+    "params": [
+      {
+        "name": "viewport",
+        "type": "ImGuiViewport*"
+      }
+    ],
+    "comment": "gget foreground draw list for the given viewport. this draw list will be the last rendered one. Useful to quickly draw shapes/text over dear imgui contents."
+  },
+  "IsRectVisible_1": {
+    "params": [
+      {
+        "name": "p_min",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "p_max",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": "test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side."
+  },
+  "Toggle": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "v",
+        "type": "bool*"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiButtonFlags"
+      },
+      {
+        "name": "animation_duration",
+        "type": "float"
+      },
+      {
+        "name": "frame_padding",
+        "type": "float"
+      },
+      {
+        "name": "knob_rounding",
+        "type": "float"
+      },
+      {
+        "name": "size",
+        "type": "ImVec2"
+      }
+    ],
+    "comment": "    Widgets: Toggle Switches\n    - Toggles behave similarly to ImGui::Checkbox()\n    - Sometimes called a toggle switch, see also: https://en.wikipedia.org/wiki/Toggle_switch_(widget)\n    - They represent two mutually exclusive states, with an optional animation on the UI when toggled.\n    Optional parameters:\n    - flags: Values from the ImGuiToggleFlags_ enumeration to set toggle modes.\n    - animation_duration: Animation duration. Amount of time in seconds the toggle should animate. (0,...] default: 1.0f (Overloads with this parameter imply ImGuiToggleFlags_Animated)\n    - frame_rounding: A scalar that controls how rounded the toggle frame is. 0 is square, 1 is round. (0, 1) default 1.0f\n    - knob_rounding: A scalar that controls how rounded the toggle knob is. 0 is square, 1 is round. (0, 1) default 1.0f\n    - size: A width and height to draw the toggle at. Defaults to `ImGui::GetFrameHeight()` and that height * Phi for the width.\n    Config structure:\n    - The overload taking a reference to an ImGuiToggleConfig structure allows for more complete control over the widget."
+  },
+  "Bg": {
+    "params": [
+      {
+        "name": "image_size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "tint_col",
+        "type": "const ImVec4&"
+      },
+      {
+        "name": "rounding",
+        "type": "float"
+      }
+    ],
+    "comment": ""
+  },
+  "Shadow": {
+    "params": [
+      {
+        "name": "image_size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "tint_col",
+        "type": "const ImVec4&"
+      },
+      {
+        "name": "rounding",
+        "type": "float"
+      },
+      {
+        "name": "thickness",
+        "type": "float"
+      }
+    ],
+    "comment": ""
+  },
+  "GetPayloadData": {
+    "params": [
+      {
+        "name": "payload",
+        "type": "const ImGuiPayload*"
+      }
+    ],
+    "comment": ""
+  },
+  "ColorDummy": {
+    "params": [
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "col",
+        "type": "const ImVec4&"
+      },
+      {
+        "name": "rounding",
+        "type": "float"
+      },
+      {
+        "name": "flags",
+        "type": "ImDrawFlags"
+      }
+    ],
+    "comment": ""
+  },
+  "GetWindowPosByName": {
+    "params": [
+      {
+        "name": "name",
+        "type": "const std::string&"
+      }
+    ],
+    "comment": ""
+  },
+  "GetWindowSizeByName": {
+    "params": [
+      {
+        "name": "name",
+        "type": "const std::string&"
+      }
+    ],
+    "comment": ""
+  },
+  "FindWindowByName": {
+    "params": [
+      {
+        "name": "name",
+        "type": "const std::string&"
+      }
+    ],
+    "comment": ""
+  },
+  "SpinnerRainbowBalls": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "radius",
+        "type": "float"
+      },
+      {
+        "name": "thickness",
+        "type": "float"
+      },
+      {
+        "name": "color",
+        "type": "const ImVec4&"
+      },
+      {
+        "name": "speed",
+        "type": "float"
+      },
+      {
+        "name": "balls",
+        "type": "int"
+      }
+    ],
+    "comment": ""
+  },
+  "GetCentralNodePos": {
+    "params": [
+      {
+        "name": "node_id",
+        "type": "unsigned int"
+      }
+    ],
+    "comment": ""
+  },
+  "GetCentralNodeSize": {
+    "params": [
+      {
+        "name": "node_id",
+        "type": "unsigned int"
+      }
+    ],
+    "comment": ""
+  },
+  "InsertNotification": {
+    "params": [
+      {
+        "name": "type",
+        "type": "int"
+      },
+      {
+        "name": "content",
+        "type": "const std::string&"
+      },
+      {
+        "name": "seconds",
+        "type": "float"
+      },
+      {
+        "name": "title",
+        "type": "const std::string&"
+      }
+    ],
+    "comment": ""
+  },
+  "SetNotifyViewportSize": {
+    "params": [
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": ""
+  },
+  "SetNotifyViewportPos": {
+    "params": [
+      {
+        "name": "pos",
+        "type": "const ImVec2&"
+      }
+    ],
+    "comment": ""
+  },
+  "DockBuilderDockWindow": {
+    "params": [
+      {
+        "name": "window_name",
+        "type": "std::string"
+      },
+      {
+        "name": "node_id",
+        "type": "unsigned int"
+      }
+    ],
+    "comment": ""
+  },
+  "DockBuilderSplitNode": {
+    "params": [
+      {
+        "name": "node_id",
+        "type": "unsigned int"
+      },
+      {
+        "name": "split_dir",
+        "type": "ImGuiDir"
+      },
+      {
+        "name": "size_ratio",
+        "type": "float"
+      },
+      {
+        "name": "dockid",
+        "type": "DockID*"
+      }
+    ],
+    "comment": ""
+  },
+  "SetColor": {
+    "params": [
+      {
+        "name": "Col",
+        "type": "int"
+      },
+      {
+        "name": "Color",
+        "type": "ImVec4"
+      }
+    ],
+    "comment": ""
+  },
+  "ImageRounded": {
+    "params": [
+      {
+        "name": "tex_handle",
+        "type": "FImGuiTextureHandle"
+      },
+      {
+        "name": "image_size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "rounding",
+        "type": "float"
+      },
+      {
+        "name": "flags",
+        "type": "ImDrawFlags"
+      }
+    ],
+    "comment": ""
+  },
+  "InputText": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "str",
+        "type": "std::string*"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiInputTextFlags"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiInputTextFlags"
+      },
+      {
+        "name": "callback",
+        "type": "std::function<int(ImGuiInputTextCallbackData* data)>"
+      }
+    ],
+    "comment": ""
+  },
+  "InputTextMultiline": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "str",
+        "type": "std::string*"
+      },
+      {
+        "name": "size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiInputTextFlags"
+      },
+      {
+        "name": "flags",
+        "type": "std::function<int(ImGuiInputTextCallbackData* data)>"
+      }
+    ],
+    "comment": ""
+  },
+  "InputTextWithHint": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "hint",
+        "type": "const char*"
+      },
+      {
+        "name": "str",
+        "type": "std::string*"
+      },
+      {
+        "name": "flags",
+        "type": "ImGuiInputTextFlags"
+      },
+      {
+        "name": "callback",
+        "type": "std::function<int(ImGuiInputTextCallbackData* data)>"
+      }
+    ],
+    "comment": ""
+  },
+  "Image": {
+    "params": [
+      {
+        "name": "tex_handle",
+        "type": "FImGuiTextureHandle"
+      },
+      {
+        "name": "image_size",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "uv0",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "uv1",
+        "type": "const ImVec2&"
+      },
+      {
+        "name": "tint_col",
+        "type": "const ImVec4&"
+      },
+      {
+        "name": "border_col",
+        "type": "const ImVec4&"
+      }
+    ],
+    "comment": "Widgets: Images\n- Read about ImTextureID here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples\n- 'uv0' and 'uv1' are texture coordinates. Read about them from the same link above.\n- Note that Image() may add +2.0f to provided size if a border is visible, ImageButton() adds style.FramePadding*2.0f to provided size."
+  },
+  "RegisterTexture": {
+    "params": [
+      {
+        "name": "Name",
+        "type": "const FName&"
+      },
+      {
+        "name": "Texture",
+        "type": "UTexture2D*"
+      },
+      {
+        "name": "bMakeUnique",
+        "type": "bool"
+      }
+    ],
+    "comment": "\t * Register texture and create its Slate resources. If texture with that name already exists then it may be updated\n\t * or if bMakeUnique is true, exception will be thrown. Throws exception, if name argument is NAME_None or texture\n\t * is null.\n\t *\n\t * Note, that updating texture resources doesn't invalidate already existing handles and returned handle will have\n\t * the same value.\n\t *\n\t * @param Name - Resource name for the texture that needs to be registered or updated\n\t * @param Texture - Texture for which we want to create or update Slate resources\n\t * @param bMakeUnique - If false then existing resources are updated/overwritten (default). If true, then stricter\n\t *     policy is applied and if resource with that name exists then exception is thrown.\n\t * @returns Handle to the texture resources, which can be used to release allocated resources and as an argument to\n\t *     relevant ImGui functions"
+  },
+  "ReleaseTexture": {
+    "params": [
+      {
+        "name": "Handle",
+        "type": "const FImGuiTextureHandle&"
+      }
+    ],
+    "comment": "\t * Unregister texture and release its Slate resources. If handle is null or not valid, this function fails silently\n\t * (for definition of 'valid' look @ FImGuiTextureHandle).\n\t *\n\t * @returns ImGui Texture Handle to texture that needs to be unregistered"
+  },
+  "FindTextureHandle": {
+    "params": [
+      {
+        "name": "Name",
+        "type": "const FName&"
+      }
+    ],
+    "comment": "* If it exists, get a handle to the texture with given resource name.\n*\n* @param Name - Resource name of a texture to find\n* @returns Handle to a registered texture or invalid handle if resources could not be found or were not valid"
+  },
+  "DockBuilderRemoveNodeDockedWindows": {
+    "params": [
+      {
+        "name": "node_id",
+        "type": "unsigned int"
+      },
+      {
+        "name": "clear_settings_refs",
+        "type": "bool"
+      }
+    ],
+    "comment": ""
+  },
+  "DockBuilderRemoveNodeChildNodes": {
+    "params": [
+      {
+        "name": "node_id",
+        "type": "unsigned int"
+      }
+    ],
+    "comment": "Remove all split/hierarchy. All remaining docked windows will be re-docked to the remaining root node (node_id)."
+  },
+  "DockBuilderFinish": {
+    "params": [
+      {
+        "name": "node_id",
+        "type": "unsigned int"
+      }
+    ],
+    "comment": ""
+  },
+  "PlotLines": {
+    "params": [
+      {
+        "name": "label",
+        "type": "string"
+      },
+      {
+        "name": "values",
+        "type": "float[]"
+      },
+      {
+        "name": "values_count",
+        "type": "int"
+      },
+      {
+        "name": "values_offset",
+        "type": "int"
+      },
+      {
+        "name": "overlay_text",
+        "type": "const char*"
+      },
+      {
+        "name": "scale_min",
+        "type": "float"
+      },
+      {
+        "name": "scale_max",
+        "type": "float"
+      },
+      {
+        "name": "graph_size",
+        "type": "ImVec2"
+      },
+      {
+        "name": "stride",
+        "type": "int"
+      }
+    ],
+    "comment": "Widgets: Data Plotting\n- Consider using ImPlot (https://github.com/epezent/implot) which is much better!"
+  },
+  "PlotHistogram": {
+    "params": [
+      {
+        "name": "label",
+        "type": "const char*"
+      },
+      {
+        "name": "values",
+        "type": "const float*"
+      },
+      {
+        "name": "values_count",
+        "type": "int"
+      },
+      {
+        "name": "values_offset",
+        "type": "int"
+      },
+      {
+        "name": "overlay_text",
+        "type": "const char*"
+      },
+      {
+        "name": "scale_min",
+        "type": "float"
+      },
+      {
+        "name": "scale_max",
+        "type": "float"
+      },
+      {
+        "name": "graph_size",
+        "type": "ImVec2"
+      },
+      {
+        "name": "stride",
+        "type": "int"
+      }
+    ],
+    "comment": ""
+  }
+}
