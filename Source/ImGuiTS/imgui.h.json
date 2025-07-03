@@ -984,10 +984,6 @@
         "type": "ImGuiInputTextFlags"
       },
       {
-        "name": "flags",
-        "type": "ImGuiInputTextFlags"
-      },
-      {
         "name": "callback",
         "type": "std::function<int(ImGuiInputTextCallbackData* data)>"
       }
@@ -1013,7 +1009,7 @@
         "type": "ImGuiInputTextFlags"
       },
       {
-        "name": "flags",
+        "name": "callback",
         "type": "std::function<int(ImGuiInputTextCallbackData* data)>"
       }
     ],
