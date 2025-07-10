@@ -78,9 +78,9 @@ void FImGuiDemo::DrawControls(int32 ContextIndex)
 
 			// Draw demo window.
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
-			//ImGui::ShowDemoWindow();
+			ImGui::ShowDemoWindow();
 			static bool bDemo = true;
-			ImPlot::ShowDemoWindow(&bDemo);
+			//ImPlot::ShowDemoWindow(&bDemo);
 		}
 	}
 }
